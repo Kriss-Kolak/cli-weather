@@ -14,12 +14,12 @@ class Hourly_Weather(Enum):
 
 def get__current_temperature(latitude: float, longitude: float) -> tuple[float, str]:
 
-    if latitude < 0 or latitude > 90:
-        raise Exception(f"LATITUDE HAS TO BE IN RANGE (0 - 90), current value: {latitude}")
-    
-    if longitude < 0 or longitude > 90:
-        raise Exception(f"LONGITUDE HAS TO BE IN RANGE (0 - 90), current value: {longitude}")
-    
+    if latitude < -90 or latitude > 90:
+        raise Exception(f"LATITUDE HAS TO BE IN RANGE (-90 - 90), current value: {latitude}")
+
+    if longitude < -180 or longitude > 180:
+        raise Exception(f"LONGITUDE HAS TO BE IN RANGE (-180 - 180), current value: {longitude}")
+
     params = params = {
         "latitude": latitude,
         "longitude": longitude,
@@ -39,12 +39,12 @@ def get__current_temperature(latitude: float, longitude: float) -> tuple[float, 
     
 def get_7_day_forecast(latitude: float, longitude: float) -> list[tuple[str, tuple[float, str]]]:
 
-    if latitude < 0 or latitude > 90:
-        raise Exception(f"LATITUDE HAS TO BE IN RANGE (0 - 90), current value: {latitude}")
-    
-    if longitude < 0 or longitude > 90:
-        raise Exception(f"LONGITUDE HAS TO BE IN RANGE (0 - 90), current value: {longitude}")
-    
+    if latitude < -90 or latitude > 90:
+        raise Exception(f"LATITUDE HAS TO BE IN RANGE (-90 - 90), current value: {latitude}")
+
+    if longitude < -180 or longitude > 180:
+        raise Exception(f"LONGITUDE HAS TO BE IN RANGE (-180 - 180), current value: {longitude}")
+
     params = params = {
         "latitude": latitude,
         "longitude": longitude,
@@ -67,12 +67,12 @@ def get_7_day_forecast(latitude: float, longitude: float) -> list[tuple[str, tup
         raise Exception(f"STATUS CODE: {r.status_code}")
     
 def get_city_name(latitude: float, longitude: float) -> str:
-    if latitude < 0 or latitude > 90:
-        raise Exception(f"LATITUDE HAS TO BE IN RANGE (0 - 90), current value: {latitude}")
-    
-    if longitude < 0 or longitude > 90:
-        raise Exception(f"LONGITUDE HAS TO BE IN RANGE (0 - 90), current value: {longitude}")
-    
+    if latitude < -90 or latitude > 90:
+        raise Exception(f"LATITUDE HAS TO BE IN RANGE (-90 - 90), current value: {latitude}")
+
+    if longitude < -180 or longitude > 180:
+        raise Exception(f"LONGITUDE HAS TO BE IN RANGE (-180 - 180), current value: {longitude}")
+
     params = params = {
         "lat": latitude,
         "lon": longitude,
