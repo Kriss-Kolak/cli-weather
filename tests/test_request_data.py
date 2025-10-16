@@ -15,4 +15,13 @@ class GetCurrentTemperatureTests(unittest.TestCase):
         
     def test_invalid_longitude(self):
         with self.assertRaises(Exception):
-            result = get__current_temperature(50,91)
+            result = get__current_temperature(50,181)
+
+    def test_negative_latitude(self):
+        with self.assertRaises(Exception):
+            result = get__current_temperature(-91,50)
+    
+    def test_negative_longitude(self):
+        with self.assertRaises(Exception):
+            result = get__current_temperature(50,-181)
+    
