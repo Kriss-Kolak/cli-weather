@@ -59,12 +59,57 @@ def get_7_day_forecast(latitude: float, longitude: float) -> list[tuple[str, tup
         temperature_units = json_object['hourly_units']['temperature_2m']
         time_list = json_object['hourly']['time']
         temperature_list = json_object['hourly']['temperature_2m']
-        print(json_object)
         result_list = []
         for time, temp in zip(time_list, temperature_list):
-            print(f"{time} : {temp} {temperature_units}")
             result_list.append((time, (float(temp), temperature_units)))
         return result_list
     else: 
         raise Exception(f"STATUS CODE: {r.status_code}")
     
+def get_city_name(latitude: float, longitude: float) -> str:
+    if latitude < 0 or latitude > 90:
+        raise Exception(f"LATITUDE HAS TO BE IN RANGE (0 - 90), current value: {latitude}")
+    
+    if longitude < 0 or longitude > 90:
+        raise Exception(f"LONGITUDE HAS TO BE IN RANGE (0 - 90), current value: {longitude}")
+    
+    params = params = {
+        "lat": latitude,
+        "lon": longitude,
+        "format": "json"
+    }
+
+    r = requests.get('https://nominatim.openstreetmap.org/reverse', params=params, headers={"User-Agent": "cli-weather-app"})
+
+    if r.status_code == 200:
+        json_object = r.json()
+        if 'address' in json_object and 'city' in json_object['address']:
+            return json_object['address']['city']
+        elif 'address' in json_object and 'town' in json_object['address']:
+            return json_object['address']['town']
+        elif 'address' in json_object and 'village' in json_object['address']:
+            return json_object['address']['village']
+        else:
+            return "Unknown Location"
+    else: 
+        raise Exception(f"STATUS CODE: {r.status_code}")
+    
+
+def get_lat_lon_from_city(city: str) -> tuple[float, float]:
+    params = {
+        "q": city,
+        "format": "json",
+        "limit": 1
+    }
+
+    r = requests.get('https://nominatim.openstreetmap.org/search', params=params, headers={"User-Agent": "cli-weather-app"})
+
+    if r.status_code == 200:
+        json_object = r.json()
+        if len(json_object) == 0:
+            raise Exception(f"CITY '{city}' NOT FOUND")
+        latitude = float(json_object[0]['lat'])
+        longitude = float(json_object[0]['lon'])
+        return (latitude, longitude)
+    else: 
+        raise Exception(f"STATUS CODE: {r.status_code}")

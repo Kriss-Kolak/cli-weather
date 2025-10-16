@@ -76,21 +76,48 @@ class Window:
     
 
 
-def create_plot(x_data: list[float], y_data: list[float]) -> str:
+def create_plot(x_time_data: list[str], y_data: list[float], latitude: float, longitude: float, city: str = None) -> str:
     """
     Creates a plot of the given x and y data
     """
-    if len(x_data) != len(y_data):
+    if len(x_time_data) != len(y_data):
         raise Exception("X_DATA AND Y_DATA HAVE TO BE OF THE SAME LENGTH")
     y_min = min(y_data)
     y_max = max(y_data)
 
+    x_data = list(range(len(x_time_data)))
     x_min = min(x_data)
     x_max = max(x_data)
 
     new_plot = Window()
 
-    
+    y_axis_labels = [y_min, (y_min + y_max) / 2, y_max]
+    x_axis_labels = [x_time_data[0], x_time_data[len(x_time_data) // 2], x_time_data[-1]]
+
+    for i, label in enumerate(y_axis_labels):
+        normalized_y = 1 - (label - y_min) / (y_max - y_min)
+        y_location = int(round(normalized_y * new_plot.available_height_value + new_plot.height_offset, 0))
+        label_str = f"{label:.2f}"
+        for j, char in enumerate(label_str, start=new_plot.width_offset - len(label_str)- new_plot.width_offset//7):
+            new_plot.set_array_value(j, y_location, char)
+
+    for i, label in enumerate(x_axis_labels):
+        if i == 0:
+            x_location = new_plot.width_offset
+        elif i == 1:
+            x_location = int(round(new_plot.available_width_value / 2 + new_plot.width_offset / 2, 0))
+        else:
+            x_location = new_plot.width - new_plot.width_offset - len(label)
+        
+        for j, char in enumerate(label):
+            new_plot.set_array_value(x_location + j, new_plot.height - new_plot.height_offset + 1, char)
+    if city:
+        title = f"7 Day Forecast for {city} (Lat: {latitude}, Lon: {longitude})"
+    else:   
+        title = f"7 Day Forecast for Latitude: {latitude}, Longitude: {longitude}"
+    title_start = (new_plot.width - len(title)) // 2
+    for i, char in enumerate(title):
+        new_plot.set_array_value(title_start + i, 1, char)
 
     for x, y in zip(x_data, y_data):
         #COORDINATE SYSTEM STARTS AT LEFT TOP CORNER
